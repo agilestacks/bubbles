@@ -1,0 +1,32 @@
+---
+version: 1
+kind: component
+meta:
+  name: bubbles
+  brief: Bubbles blobs storage
+  source:
+      dir: ../api
+
+requires:
+- kubernetes
+
+parameters:
+- name: dns.domain
+  env: DOMAIN_NAME
+- name: component.bubbles
+  parameters:
+  - name: name
+    value: bubbles
+  - name: namespace
+    value: automation-hub
+    env: NAMESPACE
+  - name: image
+    env: IMAGE
+
+templates:
+  files: ["templates/*.template"]
+
+outputs:
+- name: component.bubbles.endpoint
+  brief: Bubbles API endpoint
+  value: http://${component.bubbles.name}.${component.bubbles.namespace}.svc.cluster.local

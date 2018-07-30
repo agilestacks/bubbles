@@ -1,0 +1,9 @@
+pkg/
+bin/bubbles
+bin/linux
+bin/darwin
+.cache
+
+!/src/bubbles/vendor/
+/src/bubbles/vendor/*
+!/src/bubbles/vendor/vendor.json

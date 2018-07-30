@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ${component.bubbles.name}
+  namespace: ${component.bubbles.namespace}
+  labels:
+    provider: agilestacks.com
+    project: bubbles
+    qualifier: service
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: ${component.bubbles.name}
+      namespace: ${component.bubbles.namespace}
+      labels:
+        provider: agilestacks.com
+        project: bubbles
+        qualifier: service
+    spec:
+      containers:
+      - name: bubbles
+        image: ${component.bubbles.image}
+        imagePullPolicy: Always
+        args:
+        - "bubbles"
+        - "-http_port"
+        - "8005"
+        - "-debug"
+        ports:
+        - name: http
+          containerPort: 8005

@@ -1,0 +1,2 @@
+api/templates/*.yaml
+!api/templates/*.template

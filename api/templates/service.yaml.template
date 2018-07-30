@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${component.bubbles.name}
+  namespace: ${component.bubbles.namespace}
+  labels:
+    provider: agilestacks.com
+    project: bubbles
+    kubernetes.io/name: bubbles
+    kubernetes.io/cluster-service: "true"
+spec:
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8005
+    protocol: TCP
+  selector:
+    provider: agilestacks.com
+    project: bubbles
+    qualifier: service

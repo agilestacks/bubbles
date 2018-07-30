@@ -22,7 +22,7 @@ func createBubble(w http.ResponseWriter, req *http.Request) {
 			id = gen
 		}
 	}
-	ttl := 10 // TODO ?ttl=
+	ttl := 300 // TODO ?ttl=
 	create(w, req, id, ttl)
 }
 
@@ -31,7 +31,7 @@ func newBubble(w http.ResponseWriter, req *http.Request) {
 	if !ok {
 		return
 	}
-	ttl := 10
+	ttl := 300
 	create(w, req, id, ttl)
 }
 

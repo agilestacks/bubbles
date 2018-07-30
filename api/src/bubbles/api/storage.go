@@ -51,7 +51,7 @@ func Init() {
 }
 
 func dispose() {
-	tick := time.Tick(2 * time.Second)
+	tick := time.Tick(30 * time.Second)
 	for {
 		select {
 		case <-tick:

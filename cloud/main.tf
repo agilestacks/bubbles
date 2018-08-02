@@ -3,7 +3,9 @@ terraform {
   backend "s3" {}
 }
 
-provider "aws" {}
+provider "aws" {
+  version = "1.29.0"
+}
 
 module "ecr" {
   source = "github.com/agilestacks/terraform-modules//ecr"

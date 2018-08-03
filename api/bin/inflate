@@ -1,0 +1,16 @@
+#!/bin/sh -xe
+
+test -n "$BUBBLES_SERVICE_HOST" -a -n "$BUBBLES_SERVICE_PORT"
+
+bubbles=http://$BUBBLES_SERVICE_HOST:$BUBBLES_SERVICE_PORT
+
+h=/tmp/bubbles-headers
+while :; do
+    curl -sS -X POST -D $h $bubbles -d test-random
+    l=$(grep -i Location $h | cut -d' ' -f2 | tr -d \\r)
+    sleep 1
+    curl -sS -X PUT ${bubbles}${l} -d test-name
+    sleep 1
+    curl -w \\n ${bubbles}${l}
+    sleep 3
+done

@@ -15,7 +15,7 @@ STATE_REGION ?= us-east-1
 
 terraform ?= terraform-v0.11
 
-deploy: init plan apply
+deploy: init import plan apply
 
 init:
 	@rm -rf .terraform/$(TF_VAR_domain)
@@ -50,3 +50,8 @@ undeploy: init
 		$(terraform) plan $(TF_OPTS) -destroy -refresh=true -module-depth=-1 -out=terraform.tfplan && \
 		$(terraform) apply $(TF_OPTS) -Xshadow=false terraform.tfplan
 .PHONY: undeploy
+
+import:
+	-cd .terraform/$(TF_VAR_name).$(TF_VAR_base_domain) && \
+		$(terraform) import $(TF_OPTS) module.ecr.aws_ecr_repository.main agilestacks/$(TF_VAR_name).$(TF_VAR_base_domain)/bubbles
+.PHONY: import

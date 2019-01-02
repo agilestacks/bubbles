@@ -16,5 +16,6 @@ COPY --from=builder /go/src/bubbles/bubbles /bin/bubbles
 RUN chmod +x /bin/bubbles
 
 EXPOSE 8005
+ENV BUBBLES_API_SECRET ""
 
 CMD ["bubbles", "-http_port", "8005"]

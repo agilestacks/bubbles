@@ -69,7 +69,7 @@ func getRouter() http.Handler {
 		rw.WriteHeader(http.StatusNotFound)
 	}))
 
-	cmw := mw(withLogger)
+	cmw := mw(withLogger, withApiSecret)
 
 	r.Handle("/", cmw(http.HandlerFunc(newBubble))).
 		Methods("POST")
@@ -77,7 +77,7 @@ func getRouter() http.Handler {
 	s := r.PathPrefix("/{name}").Subrouter()
 	s.Handle("", cmw(http.HandlerFunc(createBubble))).
 		Methods("PUT")
-	s.Handle("", cmw(http.HandlerFunc(getBubble))).
+	s.Handle("", mw(withLogger)(http.HandlerFunc(getBubble))).
 		Methods("GET")
 	// s.Handle("", cmw(http.HandlerFunc(deleteBubble))).
 	// 	Methods("DELETE")

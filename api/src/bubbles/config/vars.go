@@ -11,7 +11,7 @@ var (
 
 	HttpPort int
 
-	BubblesApiSecret string // unused
+	BubblesApiSecret string
 )
 
 func Update() {

@@ -22,6 +22,12 @@ spec:
       - name: bubbles
         image: ${component.bubbles.image}
         imagePullPolicy: Always
+        env:
+        - name: BUBBLES_API_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: bubbles-secrets
+              key:  bubbles-api-secret
         args:
         - "bubbles"
         - "-http_port"

@@ -28,6 +28,8 @@ parameters:
     env: NAMESPACE
   - name: image
     env: IMAGE
+  - name: bubblesApiSecret
+    kind: user
 
 templates:
   files: ["templates/*.template"]

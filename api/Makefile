@@ -73,10 +73,12 @@ push:
 kubernetes:
 	$(kubectl) apply -f templates/namespace.yaml
 	$(kubectl) apply -f templates/service.yaml
+	$(kubectl) apply -f templates/secret.yaml
 	$(kubectl) apply -f templates/deployment.yaml
 .PHONY: kubernetes
 
 undeploy:
 	-$(kubectl) delete -f templates/deployment.yaml
+	-$(kubectl) delete -f templates/secret.yaml
 	-$(kubectl) delete -f templates/service.yaml
 .PHONY: undeploy

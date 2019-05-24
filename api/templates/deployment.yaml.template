@@ -9,6 +9,11 @@ metadata:
     qualifier: service
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      provider: agilestacks.com
+      project: bubbles
+      qualifier: service
   template:
     metadata:
       name: ${component.bubbles.name}

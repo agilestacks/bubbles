@@ -1,4 +1,4 @@
-FROM golang:1.11-alpine as builder
+FROM golang:1.12-alpine as builder
 
 RUN apk update && apk upgrade && \
     apk add --no-cache git
@@ -10,7 +10,7 @@ RUN /go/bin/govendor sync
 RUN go build -v bubbles
 
 
-FROM alpine:3.8
+FROM alpine:3.10
 
 COPY --from=builder /go/src/bubbles/bubbles /bin/bubbles
 RUN chmod +x /bin/bubbles

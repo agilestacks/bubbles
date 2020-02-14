@@ -10,7 +10,7 @@ RUN /go/bin/govendor sync
 RUN go build -v bubbles
 
 
-FROM alpine:3.10
+FROM alpine:3.11
 
 COPY --from=builder /go/src/bubbles/bubbles /bin/bubbles
 RUN chmod +x /bin/bubbles

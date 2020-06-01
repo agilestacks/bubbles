@@ -4,6 +4,8 @@ bin/linux
 bin/darwin
 .cache
 
+src/github.com
+
 !/src/bubbles/vendor/
 /src/bubbles/vendor/*
 !/src/bubbles/vendor/vendor.json

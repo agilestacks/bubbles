@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/gorilla/mux"
-	// "bubbles/config"
 )
 
 func createBubble(w http.ResponseWriter, req *http.Request) {

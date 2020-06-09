@@ -9,7 +9,7 @@ import (
 
 	// "github.com/google/btree"
 
-	"bubbles/config"
+	"github.com/agilestacks/bubbles/cmd/bubbles/config"
 )
 
 var (

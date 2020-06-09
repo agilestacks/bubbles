@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"bubbles/config"
+	"github.com/agilestacks/bubbles/cmd/bubbles/config"
 )
 
 func Parse() {

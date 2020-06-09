@@ -1,2 +1,5 @@
-api/templates/*.yaml
-!api/templates/*.template
+/bubbles
+bin/bubbles
+bin/linux
+bin/darwin
+templates/*.yaml

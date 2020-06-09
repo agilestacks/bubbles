@@ -1,13 +1,12 @@
-.DEFAULT_GOAL := compile
+.DEFAULT_GOAL := build
 
-export GOPATH := $(abspath .)
-export GOBIN  := $(GOPATH)/bin/$(shell uname -s | tr A-Z a-z)
-export PATH   := $(GOBIN):$(PATH)
+export GOBIN  := $(abspath .)/bin/$(shell uname -s | tr A-Z a-z)
 
 export AWS_DEFAULT_REGION ?= us-east-2
 
-DOMAIN_NAME     ?= dev.kubernetes.delivery
+DOMAIN_NAME     ?= test.dev.superhub.io
 COMPONENT_NAME  ?= bubbles
+LOCAL_IMAGE     ?= agilestacks/bubbles
 REGISTRY        ?= $(subst https://,,$(lastword $(shell aws ecr get-login --region $(AWS_DEFAULT_REGION))))
 IMAGE           ?= $(REGISTRY)/agilestacks/$(DOMAIN_NAME)/bubbles
 IMAGE_VERSION   ?= $(shell git rev-parse HEAD | colrm 7)
@@ -17,47 +16,27 @@ kubectl         ?= kubectl --context="$(DOMAIN_NAME)" --namespace="$(NAMESPACE)"
 docker          ?= docker
 aws             ?= aws
 
-install:
-	@go get -u github.com/kardianos/govendor
-.PHONY: install
-
-govendor-list:
-	@cd src/bubbles && $(GOBIN)/govendor list
-.PHONY: govendor-list
-
-govendor: govendor-list
-	@cd src/bubbles && $(GOBIN)/govendor sync
-.PHONY: govendor
-
-govendor-add: govendor-list
-	@cd src/bubbles && $(GOBIN)/govendor add +e
-.PHONY: govendor-add
-
-compile: govendor get
-
 get:
-	@go get bubbles
+	go get github.com/agilestacks/bubbles/cmd/bubbles
 .PHONY: get
 
 run: get
-	@$(GOBIN)/bubbles -trace
+	$(GOBIN)/bubbles -trace
 .PHONY: run
 
 fmt:
-	@go fmt bubbles bubbles/api bubbles/config bubbles/flags
+	go fmt github.com/agilestacks/bubbles/...
 .PHONY: fmt
 
 deploy: build ecr-login push kubernetes
 
 clean:
-	-@rm -rf .cache pkg bin/darwin bin/linux \
-		src/github.com src/golang.org src/gopkg.in \
-		src/hub/vendor/github.com src/hub/vendor/golang.org src/hub/vendor/gopkg.in
-	-@find src -not -path "*src/bubbles*" -not -path "src" -type d -maxdepth 1 | xargs rm -rf
+	@rm -f bubbles bin/bubbles
+	@rm -rf bin/darwin bin/linux
 .PHONY: clean
 
 build:
-	@$(docker) build -t $(IMAGE):$(IMAGE_VERSION) .
+	$(docker) build -t $(LOCAL_IMAGE):$(IMAGE_VERSION) -t $(LOCAL_IMAGE):latest .
 .PHONY: build
 
 ecr-login:
@@ -65,7 +44,8 @@ ecr-login:
 .PHONY: ecr-login
 
 push:
-	$(docker) tag  $(IMAGE):$(IMAGE_VERSION) $(IMAGE):latest
+	$(docker) tag $(LOCAL_IMAGE):$(IMAGE_VERSION) $(IMAGE):$(IMAGE_VERSION)
+	$(docker) tag $(LOCAL_IMAGE):$(IMAGE_VERSION) $(IMAGE):latest
 	$(docker) push $(IMAGE):$(IMAGE_VERSION)
 	$(docker) push $(IMAGE):latest
 .PHONY: push

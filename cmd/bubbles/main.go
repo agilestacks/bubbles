@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	"bubbles/api"
-	"bubbles/config"
-	"bubbles/flags"
+	"github.com/agilestacks/bubbles/cmd/bubbles/api"
+	"github.com/agilestacks/bubbles/cmd/bubbles/config"
+	"github.com/agilestacks/bubbles/cmd/bubbles/flags"
 )
 
 func main() {

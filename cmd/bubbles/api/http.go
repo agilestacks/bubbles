@@ -10,7 +10,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"bubbles/config"
+	"github.com/agilestacks/bubbles/cmd/bubbles/config"
 )
 
 type middleware func(http.Handler) http.Handler

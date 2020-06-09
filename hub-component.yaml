@@ -3,9 +3,9 @@ version: 1
 kind: component
 meta:
   name: bubbles
-  brief: Bubbles blobs storage
+  brief: Bubbles blobs in-memory storage
   source:
-      dir: ../api
+      dir: ../bubbles
 
 requires:
 - kubernetes
@@ -32,7 +32,8 @@ parameters:
     kind: user
 
 templates:
-  files: ["templates/*.template"]
+  files:
+  - "templates/*.template"
 
 outputs:
 - name: component.bubbles.endpoint

@@ -1,20 +1,22 @@
 .DEFAULT_GOAL := build
 
-export GOBIN  := $(abspath .)/bin/$(shell uname -s | tr A-Z a-z)
+OS := $(shell uname -s | tr A-Z a-z)
+
+export GOBIN := $(abspath .)/bin/$(OS)
 
 export AWS_DEFAULT_REGION ?= us-east-2
 
-DOMAIN_NAME     ?= test.dev.superhub.io
-COMPONENT_NAME  ?= bubbles
-LOCAL_IMAGE     ?= agilestacks/bubbles
-REGISTRY        ?= $(subst https://,,$(lastword $(shell aws ecr get-login --region $(AWS_DEFAULT_REGION))))
-IMAGE           ?= $(REGISTRY)/agilestacks/$(DOMAIN_NAME)/bubbles
-IMAGE_VERSION   ?= $(shell git rev-parse HEAD | colrm 7)
-NAMESPACE       ?= automation-hub
+DOMAIN_NAME    ?= test.dev.superhub.io
+COMPONENT_NAME ?= bubbles
+LOCAL_IMAGE    ?= agilestacks/bubbles
+REGISTRY       ?= $(subst https://,,$(lastword $(shell aws ecr get-login --region $(AWS_DEFAULT_REGION))))
+IMAGE          ?= $(REGISTRY)/agilestacks/$(DOMAIN_NAME)/bubbles
+IMAGE_VERSION  ?= $(shell git rev-parse HEAD | colrm 7)
+NAMESPACE      ?= automation-hub
 
-kubectl         ?= kubectl --context="$(DOMAIN_NAME)" --namespace="$(NAMESPACE)"
-docker          ?= docker
-aws             ?= aws
+kubectl ?= kubectl --context="$(DOMAIN_NAME)" --namespace="$(NAMESPACE)"
+docker  ?= docker
+aws     ?= aws
 
 get:
 	go get github.com/agilestacks/bubbles/cmd/bubbles
@@ -27,6 +29,10 @@ run: get
 fmt:
 	go fmt github.com/agilestacks/bubbles/...
 .PHONY: fmt
+
+vet:
+	go vet -composites=false github.com/agilestacks/bubbles/...
+.PHONY: vet
 
 deploy: build ecr-login push kubernetes
 

@@ -101,7 +101,7 @@ func getBubble(w http.ResponseWriter, req *http.Request) {
 		wrote, err := w.Write(body)
 		if err != nil || wrote != len(body) {
 			log.Printf("Unable to send `%s` (wrote %d out of %d bytes): %v",
-				wrote, len(body), err)
+				id, wrote, len(body), err)
 		}
 	}
 }

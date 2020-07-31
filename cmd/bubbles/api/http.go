@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -63,8 +64,33 @@ func withAuth(handler http.Handler) http.Handler {
 	})
 }
 
+func allowedOrigins() []string {
+	return []string{"*"}
+}
+
+func allowedHeaders() []string {
+	return []string{
+		"Accept", "Accept-Encoding", "Accept-Language", "Authorization",
+		"Connection", "Content-Length", "Content-Type", "Token", "Session", "Host", "Origin",
+		"X-CSRF-Token", "X-Requested-With", "X-Agent-Request", "X-Agent",
+	}
+}
+
+func withAccessControl(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", strings.Join(allowedOrigins(), ","))
+		w.Header().Set("Access-Control-Allow-Headers", strings.Join(allowedHeaders(), ","))
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		if r.Method == http.MethodOptions {
+			return
+		}
+		handler.ServeHTTP(w, r)
+	})
+}
+
 func getRouter() http.Handler {
 	r := mux.NewRouter()
+	r.Use(mux.CORSMethodMiddleware(r), withAccessControl)
 	r.NotFoundHandler = mw(withLogger)(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		rw.WriteHeader(http.StatusNotFound)
 	}))
@@ -72,19 +98,19 @@ func getRouter() http.Handler {
 	cmw := mw(withLogger, withApiSecret)
 
 	r.Handle("/", cmw(http.HandlerFunc(newBubble))).
-		Methods("POST")
+		Methods(http.MethodPost, http.MethodOptions)
 
 	s := r.PathPrefix("/{name}").Subrouter()
 	s.Handle("", cmw(http.HandlerFunc(createBubble))).
-		Methods("PUT")
+		Methods(http.MethodPut, http.MethodOptions)
 	s.Handle("", mw(withLogger)(http.HandlerFunc(getBubble))).
-		Methods("GET")
+		Methods(http.MethodGet, http.MethodOptions)
 	// s.Handle("", cmw(http.HandlerFunc(deleteBubble))).
 	// 	Methods("DELETE")
 
 	s = r.PathPrefix("/api/v1/ping").Subrouter()
 	s.Handle("", mw(withLogger)(http.HandlerFunc(ping))).
-		Methods("GET")
+		Methods(http.MethodGet, http.MethodOptions)
 
 	return r
 }

@@ -27,7 +27,11 @@ parameters:
     value: automation-hub
     env: NAMESPACE
   - name: image
+    value: ${component.docker.registry.image}
     env: IMAGE
+  - name: registry
+    value: ${component.docker.auth.host}
+    env: REGISTRY
   - name: bubblesApiSecret
     kind: user
 

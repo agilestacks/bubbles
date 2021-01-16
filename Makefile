@@ -6,13 +6,12 @@ export GOBIN := $(abspath .)/bin/$(OS)
 
 export AWS_DEFAULT_REGION ?= us-east-2
 
-DOMAIN_NAME    ?= test.dev.superhub.io
-COMPONENT_NAME ?= bubbles
-LOCAL_IMAGE    ?= agilestacks/bubbles
-REGISTRY       ?= $(subst https://,,$(lastword $(shell aws ecr get-login --region $(AWS_DEFAULT_REGION))))
-IMAGE          ?= $(REGISTRY)/agilestacks/$(DOMAIN_NAME)/bubbles
-IMAGE_VERSION  ?= $(shell git rev-parse HEAD | colrm 7)
-NAMESPACE      ?= automation-hub
+DOMAIN_NAME   ?= test.dev.superhub.io
+LOCAL_IMAGE   ?= agilestacks/bubbles
+REGISTRY      ?= $(shell $(aws) sts get-caller-identity | jq -r .Account).dkr.ecr.$(AWS_DEFAULT_REGION).amazonaws.com
+IMAGE         ?= $(REGISTRY)/agilestacks/$(DOMAIN_NAME)/bubbles
+IMAGE_VERSION ?= $(shell git rev-parse HEAD | colrm 7)
+NAMESPACE     ?= automation-hub
 
 kubectl ?= kubectl --context="$(DOMAIN_NAME)" --namespace="$(NAMESPACE)"
 docker  ?= docker
@@ -46,7 +45,7 @@ build:
 .PHONY: build
 
 ecr-login:
-	$(aws) ecr get-login --no-include-email --region $(AWS_DEFAULT_REGION) | $(SHELL) -
+	$(aws) ecr get-login-password --region $(AWS_DEFAULT_REGION) | $(docker) login --username AWS --password-stdin $(REGISTRY)
 .PHONY: ecr-login
 
 push:

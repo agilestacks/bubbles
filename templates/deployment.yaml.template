@@ -26,7 +26,7 @@ spec:
       containers:
       - name: bubbles
         image: ${component.bubbles.image}
-        imagePullPolicy: Always
+        imagePullPolicy: Never
         env:
         - name: BUBBLES_API_SECRET
           valueFrom:

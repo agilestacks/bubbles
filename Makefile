@@ -14,7 +14,7 @@ IMAGE_VERSION ?= $(shell git rev-parse HEAD | colrm 7)
 NAMESPACE     ?= automation-hub
 
 kubectl ?= kubectl --context="$(DOMAIN_NAME)" --namespace="$(NAMESPACE)"
-docker  ?= docker
+docker  ?= nerdctl --namespace="k8s.io"
 aws     ?= aws
 
 get:
@@ -33,7 +33,7 @@ vet:
 	go vet -composites=false github.com/agilestacks/bubbles/...
 .PHONY: vet
 
-deploy: build ecr-login push kubernetes
+deploy: build kubernetes
 
 clean:
 	@rm -f bubbles bin/bubbles
@@ -41,7 +41,7 @@ clean:
 .PHONY: clean
 
 build:
-	$(docker) build -t $(LOCAL_IMAGE):$(IMAGE_VERSION) -t $(LOCAL_IMAGE):latest .
+	$(docker) build -t $(IMAGE) .
 .PHONY: build
 
 ecr-login:
